@@ -10,5 +10,6 @@ This a React-based Google Books Search application utilizing the Google Books AP
 
 ## Further Development
 - Getting Heroku Deployment to work
+- Fixing bugs
 - More styling work
 - Creating a user specific login to save books for each user
