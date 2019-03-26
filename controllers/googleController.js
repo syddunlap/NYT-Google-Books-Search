@@ -2,7 +2,6 @@ const axios = require("axios");
 const db = require("../models");
 
 module.exports = {
-    // Get all results that contain the search request in the title
   findAll: function(req, res) {
     const { query: params } = req;
     axios
@@ -12,7 +11,6 @@ module.exports = {
       .then(results =>
         results.data.items.filter(
           result =>
-          // Catch this information from the results
             result.volumeInfo.title &&
             result.volumeInfo.infoLink &&
             result.volumeInfo.authors &&
@@ -28,7 +26,6 @@ module.exports = {
           )
         )
       )
-      // Put the results in json format
       .then(books => res.json(books))
       .catch(err => res.status(422).json(err));
   }
