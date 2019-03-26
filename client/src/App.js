@@ -13,7 +13,7 @@ function App() {
         <Navbar />
         <Wrapper>
           <Route exact path="/" component={Search} />
-          <Route exact path="/seach" component={Seach} />
+          <Route exact path="/search" component={Search} />
           <Route exact path="/saved" component={Saved} />
           <Route component={NoMatch} />
         </Wrapper>
