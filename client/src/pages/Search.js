@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import API from "../utils/API";
 import Card from "../components/Card";
+import Book from "../components/Book";
 import Col from "../components/Col";
 import Row from "../components/Row";
 import Container from "../components/Container";
