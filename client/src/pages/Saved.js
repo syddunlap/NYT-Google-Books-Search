@@ -2,8 +2,10 @@ import React, { Component } from "react";
 import Card from "../components/Card";
 import Book from "../components/Book";
 import API from "../utils/API";
-import { Col, Row, Container } from "../components/Grid";
-import { List } from "../components/List";
+import Col from "../components/Col";
+import Row from "../components/Row";
+import Container from "../components/Container";
+import List from "../components/List";
 
 class Saved extends Component {
     state = {

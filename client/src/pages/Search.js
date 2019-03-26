@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import API from "../utils/API";
 import Card from "../components/Card";
-import { Col, Row, Container } from "../components/Grid";
-import { List } from "../components/List";
+import Col from "../components/Col";
+import Row from "../components/Row";
+import Container from "../components/Container";
+import List from "../components/List";
 import SearchForm from "../components/SearchForm";
-import SearchResults from "../components/SearchResults";
 
 class Search extends Component {
   state = {
