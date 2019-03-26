@@ -1,41 +1,54 @@
 import React, { Component } from "react";
 import API from "../utils/API";
-import Container from "../components/Container";
+import Card from "../components/Card";
+import { Col, Row, Container } from "../components/Grid";
+import { List } from "../components/List";
 import SearchForm from "../components/SearchForm";
 import SearchResults from "../components/SearchResults";
 
 class Search extends Component {
   state = {
-    search: "",
-    results: [],
-    error: ""
+    books: [],
+    q: "",
+    message: "Enter a Book Title To Search!"
   };
 
-  handleInputChange = event => {
-    this.setState({ search: event.target.value });
-  };
+  handleInputChange() {
 
-  handleFormSubmit = event => {
-    event.preventDefault();
-    API.get(this.state.search)
-      .then(res => {
-        if (res.data.status === "error") {
-          throw new Error(res.data.message);
-        }
-        this.setState({ results: res.data.message, error: "" });
-      })
-      .catch(err => this.setState({ error: err.message }));
-  };
+  }
+
+  handleFormSubmit() {
+
+  }
+  
   render() {
     return (
       <div>
-        <Container style={{ minHeight: "80%" }}>
-          <h1 className="text-center">Search By Book Title!</h1>
-          <SearchForm
-            handleFormSubmit={this.handleFormSubmit}
-            handleInputChange={this.handleInputChange}
-          />
-          <SearchResults results={this.state.results} />
+        <Container>
+          <Row>
+            <strong>(React) Google Books Search</strong>
+          <h1 className="text-center">Search for and Save Books of Interest</h1>
+          </Row>
+          <Row>
+            <Col size="md-12">
+              <Card title="Search Form">
+                <SearchForm
+                  handleInputChange={this.handleInputChange}
+                  handleFormSubmit={this.handleFormSubmit}
+                  q={this.state.q}
+                />
+              </Card>
+            </Col>
+          </Row>
+          <Row>
+            <Col size="md-12">
+              <Card title="Search Results">
+              
+              </Card>
+            </Col>
+          </Row>
+
+
         </Container>
       </div>
     );
