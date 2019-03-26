@@ -13,14 +13,33 @@ class Search extends Component {
     message: "Enter a Book Title To Search!"
   };
 
-  handleInputChange() {
-
+  handleInputChange = event => {
+    const { name, value } = event.target;
+    this.setState({
+      [name]: value
+    });
   }
 
-  handleFormSubmit() {
-
+  handleFormSubmit = event => {
+    event.preventDefault();
+    this.getBooks();
   }
-  
+
+  getBooks = () => {
+    API.getBooks(this.state.q)
+    .then(res => 
+      this.setState({
+        books: res.data
+      })
+    )
+    .catch(() =>
+      this.setState({
+        books: [],
+        message: "No Books Found, Try Again."
+      })
+    );
+  };
+
   render() {
     return (
       <div>
