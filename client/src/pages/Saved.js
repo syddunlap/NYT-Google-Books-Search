@@ -5,7 +5,7 @@ import API from "../utils/API";
 import Col from "../components/Col";
 import Row from "../components/Row";
 import Container from "../components/Container";
-import List from "../components/List";
+import { List } from "../components/List";
 
 class Saved extends Component {
     state = {

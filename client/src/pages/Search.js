@@ -4,7 +4,7 @@ import Card from "../components/Card";
 import Col from "../components/Col";
 import Row from "../components/Row";
 import Container from "../components/Container";
-import List from "../components/List";
+import { List } from "../components/List";
 import SearchForm from "../components/SearchForm";
 
 class Search extends Component {
