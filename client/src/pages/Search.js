@@ -1,116 +1,145 @@
-import React, { Component } from "react";
-import API from "../utils/API";
-import Card from "../components/Card";
-import Book from "../components/Book";
-import Col from "../components/Col";
-import Row from "../components/Row";
-import Container from "../components/Container";
-import { List } from "../components/List";
-import SearchForm from "../components/SearchForm";
+import React, { Component } from 'react';
+import API from '../utils/API';
+import Jumbotron from '../components/Jumbotron/Jumbotron';
+import SearchCard from '../components/SearchCard/SearchCard';
+import ResultsCard from '../components/ResultsCard/ResultsCard';
+import SaveBtn from '../components/SaveBtn/SaveBtn';
 
 class Search extends Component {
-  state = {
-    books: [],
-    q: "",
-    message: "Enter a Book Title To Search!"
-  };
 
-  // Method to change the value of what is being typed in the form
-  handleInputChange = event => {
-    const { name, value } = event.target;
-    this.setState({
-      [name]: value
-    });
-  };
+    state = {
+        books: [],
+        inputTitle: ""
+    }
 
-  // Method to handle the when the form is submitted or "Search" is pressed.
-  handleFormSubmit = event => {
-    event.preventDefault();
-    this.getBooks();
-  };
+    componentDidMount() {
+        this.loadBooks();
+    }
 
-  // Method for when the "Search" Button is clicked & also after a book is saved
-  getBooks = () => {
-    API.getBooks(this.state.q)
-      .then(res =>
+    loadBooks = () => {
+        API.search("Harry Potter")
+            .then(res => {
+                this.setState({ books: res.data.items , inputTitle: '' });
+            })
+            .catch(err => console.log(err))
+    }
+
+    //queries Google Books API 
+    searchBooks = query => {
+        API.search(query)
+            .then(res => {
+                this.setState({
+                    books: res.data.items,
+                    inputTitle: ''
+                });
+            })
+            .catch(err => console.log(err))
+    }
+
+    // handles form submit and runs google books query
+    handleFormSubmit = event => {
+        event.preventDefault();
+        this.searchBooks(this.state.inputTitle);
+    }
+
+    //manipulates title state value
+    handleInputChange = event => {
+        const { name, value } = event.target;
         this.setState({
-          books: res.data
-        })
-      )
-      .catch(() =>
+            [name]: value
+        });
+    };
+
+
+    //re-renders displayed list of resulting books from google API after a user chooses to save a title
+    handleSaveReRender = (id) => {
+        const updatedBooks = this.state.books.filter(book => book.id !== id);
+
         this.setState({
-          books: [],
-          message: "No Books Found, Try Again."
-        })
-      );
-  };
+            books: updatedBooks
+        });
+    }
 
-  // Method for when the "Save" Button is clicked
-  saveBook = id => {
-    const book = this.state.books.find(book => book.id === id);
-    API.saveBook({
-      googleId: book.id,
-      title: book.volumeInfo.title,
-      link: book.volumeInfo.infoLink,
-      authors: book.volumeInfo.authors,
-      description: book.volumeInfo.description,
-      image: book.volumeInfo.imageLinks.thumbnail
-    }).then(() => this.getBooks());
-  };
+    //sets up redirect function to allow user to view google book source page
+    bookInfoRedirect = (link) => {
+        window.location.assign(link)
+    }
 
-  render() {
-    return (
-      <div>
-        <Container>
-          <Row>
-            <strong>(React) Google Books Search</strong>
-            <h1 className="text-center">Search for and Save Books of Interest</h1>
-          </Row>
-          <Row>
-            <Col size="md-12">
-              <Card title="Search Form">
-                <SearchForm
-                  handleInputChange={this.handleInputChange}
-                  handleFormSubmit={this.handleFormSubmit}
-                  q={this.state.q}
-                />
-              </Card>
-            </Col>
-          </Row>
-          <Row>
-            <Col size="md-12">
-              <Card title="Results">
-                {this.state.books.length ? (
-                  <List>
-                    {this.state.books.map(book => (
-                      <Book
-                        key={book.id}
-                        title={book.volumeInfo.title}
-                        link={book.volumeInfo.infoLink}
-                        authors={book.volumeInfo.authors.join(", ")}
-                        description={book.volumeInfo.description}
-                        image={book.volumeInfo.imageLinks.thumbnail}
-                        Button={() => (
-                          <button
-                            onClick={() => this.saveBook(book.id)}
-                            className="btn btn-primary ml-2"
-                          >
-                            Save
+    render() {
+        return (
+            <div>
+                <Jumbotron>
+                    <h1 className='text-center'>Google Books Search</h1>
+                    <h2 className='text-center lead'>Search for and save books using Google API!</h2>
+                </Jumbotron>
+                <SearchCard>
+                    <div className='input-group input-group-sm mb-3'>
+                        <input type='text'
+                            className='form-control'
+                            aria-label='Sizing example input'
+                            aria-describedby='inputGroup-sizing-sm'
+                            placeholder='e.g. Harry Potter'
+                            name='inputTitle'
+                            value={this.state.inputTitle}
+                            onChange={this.handleInputChange}
+                        />
+                    </div>
+                    <div className='text-sm-left text-lg-right'>
+                        <button
+                            className='btn btn-primary text-sm-left text-ld-right'
+                            onClick={this.handleFormSubmit}>Search
                         </button>
+                    </div>
+                </SearchCard>
+                <ResultsCard>
+                    {this.state.books.length ? (
+                        <div className='card-body'>
+                            {this.state.books.map(book => (
+                                <div className='card'>
+                                    <div className='card-body'>
+                                        <div className='container'>
+                                            <div className='row'>
+                                                <div className='col-sm-12 col-md-6'>
+                                                    <p className='font-italic book-title'>{book.volumeInfo.title}</p>
+                                                </div>
+                                                <div className='col-sm-12 col-md-6 text-sm-left text-md-right'>
+                                                    <button className='btn btn-success mr-1' onClick={() => this.bookInfoRedirect(book.volumeInfo.infoLink)}>View</button>
+                                                    <SaveBtn
+                                                        className='btn btn-primary'
+                                                        id={book.id}
+                                                        title={book.volumeInfo.title}
+                                                        authors={book.volumeInfo.authors}
+                                                        description={book.volumeInfo.description}
+                                                        image={book.volumeInfo.imageLinks.thumbnail}
+                                                        link={book.volumeInfo.infoLink}
+                                                        handleSaveReRender={this.handleSaveReRender}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className='row'>
+                                                <div className='col-12'><p className='font-italic book-author mt-1'>Written by {book.volumeInfo.authors.join(", ")}</p></div>
+                                            </div>
+                                            <div className='row'>
+                                                <div className='col-md-2'>
+                                                    <img src={book.volumeInfo.imageLinks.thumbnail} alt={`${book.volumeInfo.title} thumbnail`} className='mb-2 img-fluid' />
+                                                </div>
+                                                <div className='col-md-10'>
+                                                    <p className='book-description'>{book.volumeInfo.description}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                            <p className='text-center mt-2'><strong>Search for a book to begin!</strong></p>
                         )}
-                      />
-                    ))}
-                  </List>
-                ) : (
-                    <h2 className="text-center">{this.state.message}</h2>
-                  )}
-              </Card>
-            </Col>
-          </Row>
-        </Container>
-      </div>
-    );
-  }
+                </ResultsCard>
+            </div>
+        )
+    }
 }
+
 
 export default Search;
